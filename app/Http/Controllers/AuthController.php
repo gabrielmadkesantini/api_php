@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function __contrstruct()
+    public function __construct()
     {
-        $this->middleware('auth:api', ['exept' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     public function login(Request $request)
@@ -49,5 +49,41 @@ class AuthController extends Controller
         $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
+
+        return response()->json([
+            'message' => "User created successfully",
+            'user' => $user
+        ]);
+
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json(['message' => "Logout successfully"]);
+    }
+
+    public function refresh()
+    {
+        return response()->json([
+            'user' => Auth::user(),
+            'authoirization' => [
+                'token' > Auth::refresh(),
+                'type' => 'bearar',
+            ]
+        ]);
+
+    }
+
+    public function test()
+    {
+        return response()->json([
+            'message' => 'Test is okay'
+        ]);
+    }
+
+    public function redirectTo()
+    {
+
     }
 }
